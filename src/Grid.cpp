@@ -6,6 +6,9 @@ Grid::Grid()
 
 Grid::~Grid()
 {
+	//for (int i = 0; i < num + 2 * wid; i++)
+	//	delete[] elem[i];
+	//delete[] elem;
 }
 
 Grid::Grid(int n, int d)

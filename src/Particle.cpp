@@ -12,7 +12,7 @@ Particle::~Particle()
 {
 }
 
-Particle::Particle(double pos_x, double pos_y, double velo_x, double velo_y, double rho1, double p1, double mass, ParticleType t, int i)
+Particle::Particle(double pos_x, double pos_y, double velo_x, double velo_y, double rho1, double p1, double mass, ParticleType t)
 {
 	x = Vector2d(pos_x, pos_y);
 	v = Vector2d(velo_x, velo_y);
@@ -20,5 +20,4 @@ Particle::Particle(double pos_x, double pos_y, double velo_x, double velo_y, dou
 	p = p1;
 	m = mass;
 	type = t;
-	ref_index = i;
 }

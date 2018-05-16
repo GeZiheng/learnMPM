@@ -20,10 +20,9 @@ public:
 	double			p;					// pressure
 	double			m;					// mass
 	ParticleType	type;				// particle type: real or ghost
-	int				ref_index;			// reference index (for ghost particle)
 
 public:
 	Particle();
 	~Particle();
-	Particle(double pos_x, double pos_y, double velo_x, double velo_y, double rho1, double p1, double mass, ParticleType t, int i);
+	Particle(double pos_x, double pos_y, double velo_x, double velo_y, double rho1, double p1, double mass, ParticleType t);
 };

@@ -16,10 +16,9 @@ extern double c;					// speed of sound
 extern double supp_size;			// support size
 extern double water_width;			// width of water
 extern double water_height;			// height of water
+extern double dom_size;				// size of domain
 extern double end_t;				// end time
 extern int frame_num;				// number of frame
 extern double frame_dt;				// frame dt
-extern double window_width;			// width of window
-extern double window_height;		// height of window
 
 #endif

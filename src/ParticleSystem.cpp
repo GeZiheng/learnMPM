@@ -68,7 +68,7 @@ void ParticleSystem::addGhostParticles()
 				new_y = - particles[l].x.y();
 				new_vx = particles[l].v.x();
 				new_vy = - particles[l].v.y();
-				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost, l);
+				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost);
 				addParticleToGrid(ghost, particles.size());
 				particles.push_back(ghost);
 			}
@@ -76,10 +76,10 @@ void ParticleSystem::addGhostParticles()
 			{
 				l = grid.elem[i][grid.wid + res - 1 - j][k];
 				new_x = particles[l].x.x();
-				new_y = 2 - particles[l].x.y();
+				new_y = 2.0 * dom_size - particles[l].x.y();
 				new_vx = particles[l].v.x();
 				new_vy = - particles[l].v.y();
-				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost, l);
+				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost);
 				addParticleToGrid(ghost, particles.size());
 				particles.push_back(ghost);
 			}
@@ -94,19 +94,19 @@ void ParticleSystem::addGhostParticles()
 				new_y = particles[l].x.y();
 				new_vx = - particles[l].v.x();
 				new_vy = particles[l].v.y();
-				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost, l);
+				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost);
 				addParticleToGrid(ghost, particles.size());
 				particles.push_back(ghost);
 			}
 			for (k = 0; k < grid.elem[grid.wid + res - 1 - i][j].size(); k++)
 			{
 				l = grid.elem[grid.wid + res - 1 - i][j][k];
-				new_x = 2 - particles[l].x.x();
+				new_x = 2.0 * dom_size - particles[l].x.x();
 				// cout << new_x << endl;
 				new_y = particles[l].x.y();
 				new_vx = - particles[l].v.x();
 				new_vy = particles[l].v.y();
-				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost, l);
+				ghost = Particle(new_x, new_y, new_vx, new_vy, particles[l].rho, particles[l].p, particles[l].m, Ghost);
 				addParticleToGrid(ghost, particles.size());
 				particles.push_back(ghost);
 			}

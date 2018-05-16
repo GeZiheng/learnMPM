@@ -16,7 +16,6 @@ private:
 	void corrector();						// corrector step
 	void writeData(int frame_num);			// write particles data into file
 	void writeDataa(int frame_num);			// write particles data into file
-	void renderScene();						// render scene on the screen
 	void densityRecons();					// density reconstruction
 
 public:

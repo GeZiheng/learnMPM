@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
-#include <GL/glut.h>
 #include "Parameters.h"
 #include "Simulator.h"
 #include "Functions.h"
@@ -19,11 +18,10 @@ double c;					// speed of sound
 double supp_size;			// support size
 double water_width;			// width of water
 double water_height;		// height of water
+double dom_size;			// size of simulation domain
 double end_t;				// end time
 int frame_num;				// number of frame
 double frame_dt;			// frame dt
-double window_width;		// width of window
-double window_height;		// height of window
 
 Simulator::Simulator()
 {
@@ -39,14 +37,6 @@ void Simulator::init()
 	string s, str;
 	int i, j;
 	myfile.open("../config.txt");
-
-	// get dx from file
-	str.clear();
-	getline(myfile, s);
-	for (i = 11; i < s.length(); i++)
-		str.push_back(s[i]);
-	res = stoi(str);
-	dx = 1.0 / double(res);
 
 	// get rho0 from file
 	str.clear();
@@ -76,7 +66,22 @@ void Simulator::init()
 		str.push_back(s[i]);
 	supp_size = stod(str);
 
+	// get dx from file
+	str.clear();
+	getline(myfile, s);
+	for (i = 8; i < s.length(); i++)
+		str.push_back(s[i]);
+	dx = stod(str);
+
 	h = supp_size * dx;
+
+	// get domain size from file
+	str.clear();
+	getline(myfile, s);
+	for (i = 9; i < s.length(); i++)
+		str.push_back(s[i]);
+	dom_size = stod(str);
+	res = ceil(dom_size / dx);
 
 	// get water size from file
 	str.clear();
@@ -111,21 +116,9 @@ void Simulator::init()
 	// get end_t from file
 	str.clear();
 	getline(myfile, s);
-	for (i = 5; i < s.length(); i++)
+	for (i = 6; i < s.length(); i++)
 		str.push_back(s[i]);
 	end_t = stod(str);
-
-	// get window size from file
-	str.clear();
-	getline(myfile, s);
-	for (i = 13; i < s.length(); i++)
-		str.push_back(s[i]);
-	window_width = stod(str);
-	str.clear();
-	getline(myfile, s);
-	for (i = 14; i < s.length(); i++)
-		str.push_back(s[i]);
-	window_height = stod(str);
 
 	myfile.close();
 
@@ -133,12 +126,12 @@ void Simulator::init()
 
 	pts_sys = ParticleSystem(res, ceil(3 * supp_size));
 	pts_sys_pre = ParticleSystem(res, ceil(3 * supp_size));
-	for (j = 0; j < water_height * res; j++)
-		for (i = 0; i < water_width * res; i++)
+	for (j = 0; j < water_height / dx; j++)
+		for (i = 0; i < water_width / dx; i++)
 		{
-			pts_sys.particles.push_back(Particle((i + 0.5) * dx, (j + 0.5) * dx, 0, 0, rho0, 0, rho0*dx*dx, Real, i));
+			pts_sys.particles.push_back(Particle((i + 0.5) * dx, (j + 0.5) * dx, 0, 0, rho0, 0, rho0*dx*dx, Real));
 			pts_sys.n_real ++;
-			pts_sys_pre.particles.push_back(Particle((i + 0.5) * dx, (j + 0.5) * dx, 0, 0, rho0, 0, rho0*dx*dx, Real, i));
+			pts_sys_pre.particles.push_back(Particle((i + 0.5) * dx, (j + 0.5) * dx, 0, 0, rho0, 0, rho0*dx*dx, Real));
 			pts_sys_pre.n_real ++;
 		}
 }
@@ -255,20 +248,6 @@ void Simulator::writeDataa(int frame_num)
 	myfile.close();
 }
 
-void Simulator::renderScene()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-	glBegin(GL_POINTS);
-	for (int i = 0; i < pts_sys.particles.size(); i++)
-	{
-		//cout << pts_sys.particles[i].p << endl;
-		glColor4f(0.5 * pts_sys.particles[i].p, 0.5 * pts_sys.particles[i].p, 1 - pts_sys.particles[i].p, 1);
-		glVertex2f(window_width * (0.1 + 0.8 * pts_sys.particles[i].x.x()), window_height * (0.1 + 0.8 * pts_sys.particles[i].x.y()));
-	}
-	glEnd();
-	glFlush();
-}
-
 void Simulator::densityRecons()
 {
 	double rho_sum, weight_sum, w;
@@ -300,7 +279,6 @@ void Simulator::oneTimeStep()
 		frame_num++;
 		//if (t < frame_num * frame_dt)
 		//	dt = frame_num * frame_dt - t;
-		// renderScene();
 		// densityRecons();
 	}
 	predictor();

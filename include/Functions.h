@@ -35,18 +35,21 @@ double drhodt_increment(Particle p1, Particle p2)
 	return p2.m * p1.rho / p2.rho * (p1.v - p2.v).dot(dw);
 }
 
-Vector2d artificial_viscosity(Particle p1, Particle p2)
+double artificial_viscosity(Particle p1, Particle p2)
 {
 	double phi = 0.1 * h;
 	double mu = h * (p1.v - p2.v).dot(p1.x - p2.x) / ((p1.x - p2.x).dot(p1.x - p2.x) + phi * phi);
-	return Vector2d(0, 0);
+	double alpha = 0.01;
+	double beta = 1.0;
+	double rho_ij = (p1.rho + p2.rho) / 2;
+	return (-alpha * c * mu + beta * mu * mu) / rho_ij;
 }
 
 Vector2d boundary_force(Vector2d x1, Vector2d x2, double r0)
 {
 	double r = (x1 - x2).norm();
 	double q = r0 / r;
-	double D = 0.001;
+	double D = 0.01;
 	if (q >= 1)
 		return D * (pow(q, 4) - pow(q, 2)) * (x1 - x2) / (r * r);
 	else
@@ -61,6 +64,6 @@ Vector2d dvdt_increment(Particle p1, Particle p2)
 	//if (p2.type == Real)
 		//incre += artificial_viscosity(p1, p2) / p1.m;
 	if (p2.type == Ghost)
-		incre += boundary_force(p1.x, p2.x, dx) / p1.m;
+		incre += boundary_force(p1.x, p2.x, dx);
 	return incre;
 }
