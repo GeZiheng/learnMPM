@@ -5,24 +5,20 @@
 using namespace std;
 using namespace Eigen;
 
-enum ParticleType
-{
-	Real,
-	Ghost
-};
-
 class Particle
 {
 public:
 	Vector2d		x;					// position
 	Vector2d		v;					// velocity
-	double			rho;				// rho0
-	double			p;					// pressure
 	double			m;					// mass
-	ParticleType	type;				// particle type: real or ghost
+	double			V;					// volume
+
+	Matrix2d		Cp;					// gradient of velocity
+	Matrix2d		dg;					// deformation gradient
+	double			jc;					// Jacobian
 
 public:
 	Particle();
 	~Particle();
-	Particle(double pos_x, double pos_y, double velo_x, double velo_y, double rho1, double p1, double mass, ParticleType t);
+	Particle(double pos_x, double pos_y, double velo_x, double velo_y, double mass, double volume);
 };

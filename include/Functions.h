@@ -1,69 +1,63 @@
 #pragma once
-#include "Parameters.h"
 #include <iostream>
-#include "Particle.h"
+#include <Eigen>
 
-double weightFunction(Vector2d x)					// weight function
+using namespace Eigen;
+
+double calWeight(Vector2d x, double h)
 {
-	double s = x.norm() / h;
-	double c = 1.0 / ( (Pi * h * h) * (1.0 - 10.0 * exp(-9.0)) );
-	if (s < 3)
-		return c * (exp(-s * s) - exp(-9.0));
+	double rx, ry, wx, wy;
+	rx = x(0) / h;
+	ry = x(1) / h;
+	if (abs(rx) < 0.5)
+		wx = 0.75 - rx * rx;
+	else if (abs(rx) < 1.5)
+		wx = 0.5 * (1.5 - abs(rx)) * (1.5 - abs(rx));
 	else
-		return 0;
-}
-
-Vector2d weightGradient(Vector2d x)				// weight gradient
-{
-	double r = x.norm();
-	double s = r / h;
-	double c = 1.0 / ( (Pi * h * h) * (1.0 - 10.0 * exp(-9.0)) );
-	if (s > 0 && s < 3)
-		return c * (-2 * s * exp(-s * s)) * x / (r*h);
+		wx = 0;
+	if (abs(ry) < 0.5)
+		wy = 0.75 - ry * ry;
+	else if (abs(ry) < 1.5)
+		wy = 0.5 * (1.5 - abs(ry)) * (1.5 - abs(ry));
 	else
-		return Vector2d(0,0);
+		wy = 0;
+	return wx * wy;
 }
 
-double equation_of_state(double rho)
+Vector3d calWeightGrad(Vector2d x, double h)					// weight function
 {
-	return rho0 * c * c / gamma * (pow(rho / rho0, gamma) - 1.0);
-}
-
-double drhodt_increment(Particle p1, Particle p2)
-{
-	Vector2d dw = weightGradient(p1.x - p2.x);
-	return p2.m * p1.rho / p2.rho * (p1.v - p2.v).dot(dw);
-}
-
-double artificial_viscosity(Particle p1, Particle p2)
-{
-	double phi = 0.1 * h;
-	double mu = h * (p1.v - p2.v).dot(p1.x - p2.x) / ((p1.x - p2.x).dot(p1.x - p2.x) + phi * phi);
-	double alpha = 0.01;
-	double beta = 1.0;
-	double rho_ij = (p1.rho + p2.rho) / 2;
-	return (-alpha * c * mu + beta * mu * mu) / rho_ij;
-}
-
-Vector2d boundary_force(Vector2d x1, Vector2d x2, double r0)
-{
-	double r = (x1 - x2).norm();
-	double q = r0 / r;
-	double D = 0.01;
-	if (q >= 1)
-		return D * (pow(q, 4) - pow(q, 2)) * (x1 - x2) / (r * r);
+	double rx, ry, wx, wy, dwx, dwy;
+	rx = x(0) / h;
+	if (abs(rx) < 0.5)
+	{
+		wx = 0.75 - rx * rx;
+		dwx = -2 / h * rx;
+	}
+	else if (abs(rx) < 1.5)
+	{
+		wx = 0.5 * (1.5 - abs(rx)) * (1.5 - abs(rx));
+		dwx = 1 / h * (rx - rx / abs(rx) * 1.5);
+	}
 	else
-		return Vector2d(0, 0);
-}
-
-Vector2d dvdt_increment(Particle p1, Particle p2)
-{
-	Vector2d dw = weightGradient(p1.x - p2.x);
-	Vector2d incre = -p2.m * (p1.p + p2.p) / (p1.rho * p2.rho) * dw;
-	// Vector2d incre = -p2.m * (p1.p / (p1.rho * p1.rho) + p2.p / (p2.rho * p2.rho) ) * dw;
-	//if (p2.type == Real)
-		//incre += artificial_viscosity(p1, p2) / p1.m;
-	if (p2.type == Ghost)
-		incre += boundary_force(p1.x, p2.x, dx);
-	return incre;
+	{
+		wx = 0;
+		dwx = 0;
+	}
+	ry = x(1) / h;
+	if (abs(ry) < 0.5)
+	{
+		wy = 0.75 - ry * ry;
+		dwy = -2 / h * ry;
+	}
+	else if (abs(ry) < 1.5)
+	{
+		wy = 0.5 * (1.5 - abs(ry)) * (1.5 - abs(ry));
+		dwy = 1 / h * (ry - ry / abs(ry) * 1.5);
+	}
+	else
+	{
+		wy = 0;
+		dwy = 0;
+	}
+	return Vector3d(wx * wy, dwx * wy, wx * dwy);
 }

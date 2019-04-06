@@ -2,21 +2,36 @@
 #include <vector>
 #include "Particle.h"
 #include "Grid.h"
-#include "ParticleSystem.h"
 
 class Simulator
 {
 private:
-	ParticleSystem		pts_sys;			// particles system
-	ParticleSystem		pts_sys_pre;		// particles system prediction
+	int					pts_num;			// number of particles
+	vector<Particle>	pts_cloud;			// particle cloud
+	Grid*				grid;				// grid
 	double				t;					// time
 
+public:
+	double				dx;					// grid dx width
+	double				dt;					// time step length
+	double				rho0;				// initial density
+	double				mu;					// mu
+	double				lambda;				// lambda
+	double				gravity;			// gravity
+	Vector2d			rec_center;			// center position
+	double				rec_size;			// rectangle size
+	double				end_t;				// end time
+	int					frame_num;			// number of frame
+	double				frame_dt;			// frame dt
+
 private:
-	void predictor();						// predictor step
-	void corrector();						// corrector step
+	void P2G();								// particle to grid transfer
+	void G2P();								// grid to particle transfer
+	void gridV();							// update grid velocity
+	void gridF();							// update grid forces
+	void ptsDG();							// evolve partivle deformation gradient
+	void advection();						// particle advection
 	void writeData(int frame_num);			// write particles data into file
-	void writeDataa(int frame_num);			// write particles data into file
-	void densityRecons();					// density reconstruction
 
 public:
 	Simulator();
