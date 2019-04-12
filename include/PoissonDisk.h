@@ -6,7 +6,7 @@
 using namespace std;
 using namespace Eigen;
 
-typedef vector<Vector2d> PointList;
+typedef vector<Vector2d, aligned_allocator<Vector2d>> PointList;
 
 class PoissonDisk 
 {

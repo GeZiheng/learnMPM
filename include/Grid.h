@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <vector>
 #include <Eigen>
@@ -14,6 +15,7 @@ public:
 	double			m;					// mass
 	Vector2d		f;					// force
 	Vector2d		mv;					// momentum
+	bool			active;				// activity
 
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW

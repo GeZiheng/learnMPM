@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ctime>
+#include "Functions.h"
 #include "PoissonDisk.h"
-#include "Parameters.h"
 
 PoissonDisk::PoissonDisk() 
 {

@@ -15,6 +15,10 @@ void GridNode::SetVal(double pos_x, double pos_y, double velo_x, double velo_y, 
 	m = mass;
 	f = Vector2d(0, 0);
 	mv = m * v;
+	if (m > 0)
+		active = true;
+	else
+		active = false;
 }
 
 
@@ -48,6 +52,7 @@ void Grid::Reset()
 			GetElem(i, j)->v.setZero();
 			GetElem(i, j)->mv.setZero();
 			GetElem(i, j)->f.setZero();
+			GetElem(i, j)->active = false;
 		}
 }
 
