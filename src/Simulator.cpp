@@ -143,7 +143,7 @@ void Simulator::init()
 	{
 		double rx = rec_center.x() + rec_size * (pts_pos[i].x() - 0.5);
 		double ry = rec_center.y() + rec_size * (pts_pos[i].y() - 0.5);
-		new_particle = new WaterParticle(rx, ry, 0, 0, rho0 * dx * dx / 8, dx * dx / 8);
+		new_particle = new JellyParticle(rx, ry, 0, 0, rho0 * dx * dx / 8, dx * dx / 8);
 		pts_cloud.push_back(new_particle);
 	}
 }

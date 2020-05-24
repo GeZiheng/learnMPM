@@ -46,4 +46,24 @@ public:
 	WaterParticle(double pos_x, double pos_y, double velo_x, double velo_y, double mass, double volume);
 	void evolveDG(double dt);
 	void calStress(double mu, double lambda, Matrix2d &tmp);
+}；
+
+class SnowParticle : public Particle
+{
+public:
+	SnowParticle();
+	~SnowParticle();
+	SnowParticle(double pos_x, double pos_y, double velo_x, double velo_y, double mass, double volume);
+	void evolveDG(double dt);
+	void calStress(double mu, double lambda, Matrix2d &tmp);
+};
+
+class SandParticle : public Particle
+{
+public:
+	SandParticle();
+	~SandParticle();
+	SandParticle(double pos_x, double pos_y, double velo_x, double velo_y, double mass, double volume);
+	void evolveDG(double dt);
+	void calStress(double mu, double lambda, Matrix2d &tmp);
 };
